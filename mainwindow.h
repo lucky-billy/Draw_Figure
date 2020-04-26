@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QGraphicsScene>
-#include <QPen>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -36,6 +35,5 @@ private:
     Ui::MainWindow *ui;
 
     QGraphicsScene m_scene;
-    QPen m_pen;
 };
 #endif // MAINWINDOW_H

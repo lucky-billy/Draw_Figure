@@ -12,15 +12,13 @@
 #include <QKeyEvent>
 #include <QList>
 
-// 自定义功能图元 - 圆点
+// 自定义功能图元 - 点
 class BPointItem : public QObject, public QAbstractGraphicsShapeItem
 {
     Q_OBJECT
 
 public:
     BPointItem(QAbstractGraphicsShapeItem* parent, QPointF p, bool type);
-
-    QPointF getPoint() const { return m_point; }
 
 protected:
     virtual QRectF boundingRect() const override;
@@ -31,24 +29,19 @@ protected:
 
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
-    virtual void keyPressEvent(QKeyEvent *event) override;
-
-    virtual QVariant itemChange(GraphicsItemChange change, const QVariant &value) override;
-
 private:
     QPointF m_point;
     bool isCenter;
 };
 
-// 圆点容器
+// 存放点的容器
 class BPointItemList: public QList<BPointItem *>
 {
 public:
     BPointItemList() { this->clear(); }
 
-    QList<QPointF> getPoints() const;
-    void setColor(const QColor color);
     void setRandColor();
+    void setColor(const QColor color);
     void setVisible(bool visible);
 };
 
