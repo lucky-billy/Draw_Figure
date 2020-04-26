@@ -38,67 +38,23 @@ void BPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
 
 void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
 {
-    switch ( event->buttons() ) {
-    case Qt::LeftButton :
-        m_point = this->mapToParent( event->pos() );
-        this->setPos(m_point);
-        this->scene()->update();
-        break;
-    default:
-        break;
-    }
-}
-
-void BPointItem::keyPressEvent(QKeyEvent *event)
-{
-    switch ( event->key() ) {
-    case Qt::Key_Left :
-        m_point.rx() --;
-        break;
-    case Qt::Key_Right :
-        m_point.rx() ++;
-        break;
-    case Qt::Key_Up :
-        m_point.ry() --;
-        break;
-    case Qt::Key_Down :
-        m_point.ry() ++;
-        break;
-    default:
-        break;
-    }
-    this->setPos(m_point);
-    this->scene()->update();
-}
-
-QVariant BPointItem::itemChange(QGraphicsItem::GraphicsItemChange change, const QVariant &value)
-{
-    switch (change)
-    {
-    case ItemSelectedHasChanged : {
-        if( value.toBool() ) {
-            this->setPen(QPen(QColor(255,255,255,255)));
+    if ( event->buttons() == Qt::LeftButton ) {
+        if (isCenter) {
+            QGraphicsItem* item = this->parentItem();
+            item->moveBy(event->scenePos().x() - event->lastScenePos().x(),
+                         event->scenePos().y() - event->lastScenePos().y());
+            this->scene()->update();
         } else {
-            this->setPen(QPen(Qt::NoPen));
+            m_point = this->mapToParent( event->pos() );
+            this->setPos(m_point);
+            this->scene()->update();
         }
-        break;
     }
-    default:
-        break;
-    }
-    return QGraphicsItem::itemChange(change, value);
 }
 
-QList<QPointF> BPointItemList::getPoints() const
+void BPointItemList::setRandColor()
 {
-    QList<QPointF> list;
-
-    for (auto &temp : *this)
-    {
-        list.append(temp->getPoint());
-    }
-
-    return list;
+    this->setColor(QColor(qrand()%256, qrand()%256, qrand()%256));
 }
 
 void BPointItemList::setColor(const QColor color)
@@ -107,11 +63,6 @@ void BPointItemList::setColor(const QColor color)
     {
         temp->setBrush(QBrush(color));
     }
-}
-
-void BPointItemList::setRandColor()
-{
-    this->setColor(QColor(qrand()%256, qrand()%256, qrand()%256));
 }
 
 void BPointItemList::setVisible(bool visible)
