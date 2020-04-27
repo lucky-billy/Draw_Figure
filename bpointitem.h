@@ -18,7 +18,15 @@ class BPointItem : public QObject, public QAbstractGraphicsShapeItem
     Q_OBJECT
 
 public:
-    BPointItem(QAbstractGraphicsShapeItem* parent, QPointF p, bool type);
+    enum PointType {
+        Center = 0, // 中心点
+        Edge        // 边缘点（可拖动改变图形的形状、大小）
+    };
+
+    BPointItem(QAbstractGraphicsShapeItem* parent, QPointF p, PointType type);
+
+    QPointF getPoint() { return m_point; }
+    void setPoint(QPointF p) { m_point = p; }
 
 protected:
     virtual QRectF boundingRect() const override;
@@ -31,15 +39,15 @@ protected:
 
 private:
     QPointF m_point;
-    bool isCenter;
+    PointType m_type;
 };
+
+//------------------------------------------------------------------------------
 
 // 存放点的容器
 class BPointItemList: public QList<BPointItem *>
 {
 public:
-    BPointItemList() { this->clear(); }
-
     void setRandColor();
     void setColor(const QColor color);
     void setVisible(bool visible);

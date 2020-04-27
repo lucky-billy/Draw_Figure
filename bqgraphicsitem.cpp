@@ -1,13 +1,14 @@
 ﻿#include "bqgraphicsitem.h"
 #include <QDebug>
 
-BGraphicsItem::BGraphicsItem(QGraphicsPixmapItem* parent) : QAbstractGraphicsShapeItem(parent)
+BGraphicsItem::BGraphicsItem(QPointF center, ItemType type) : m_center(center), m_type(type)
 {
-    QPen p = this->pen();
-    p.setColor(QColor(0, 160, 230));
-    p.setWidth(2);
-    this->setPen(p);
+    m_pen_noSelected.setColor(QColor(0, 160, 230));
+    m_pen_noSelected.setWidth(2);
+    m_pen_isSelected.setColor(QColor(255, 0, 255));
+    m_pen_isSelected.setWidth(2);
 
+    this->setPen(m_pen_noSelected);
     this->setFlags(QGraphicsItem::ItemIsSelectable |
                    QGraphicsItem::ItemIsMovable |
                    QGraphicsItem::ItemIsFocusable);
@@ -15,24 +16,37 @@ BGraphicsItem::BGraphicsItem(QGraphicsPixmapItem* parent) : QAbstractGraphicsSha
     m_itemList.append(this);
 }
 
-BCircle::BCircle(qreal x, qreal y, qreal radius, QGraphicsPixmapItem* parent)
-    : BGraphicsItem(parent)
-    , radius(radius)
+void BGraphicsItem::focusInEvent(QFocusEvent *event)
 {
-    center.setX(x);
-    center.setY(y);
-    QPointF edge(x+radius, y);
-    m_pointList.append(new BPointItem(this, center, true));
-    m_pointList.append(new BPointItem(this, edge, false));
+    Q_UNUSED(event);
+    this->setPen(m_pen_isSelected);
+}
+
+void BGraphicsItem::focusOutEvent(QFocusEvent *event)
+{
+    Q_UNUSED(event);
+    this->setPen(m_pen_noSelected);
+}
+
+//------------------------------------------------------------------------------
+
+BCircle::BCircle(QPointF center, QPointF edge, ItemType type) : BGraphicsItem(center, type), m_edge(edge)
+{
+    BPointItem *point = new BPointItem(this, edge, BPointItem::Edge);
+    point->setParentItem(this);
+    m_pointList.append(point);
+    m_pointList.append(new BPointItem(this, center, BPointItem::Center));
     m_pointList.setRandColor();
+
+    updateRadius();
 }
 
 QRectF BCircle::boundingRect() const
 {
-    return QRectF(center.x() - radius,
-                  center.y() - radius,
-                  radius * 2,
-                  radius * 2);
+    return QRectF(m_center.x() - m_radius,
+                  m_center.y() - m_radius,
+                  m_radius * 2,
+                  m_radius * 2);
 }
 
 void BCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -41,9 +55,20 @@ void BCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     Q_UNUSED(widget);
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
-    QRectF ret(center.x() - radius,
-               center.y() - radius,
-               radius * 2,
-               radius * 2);
+
+    QRectF ret(m_center.x() - m_radius,
+               m_center.y() - m_radius,
+               m_radius * 2,
+               m_radius * 2);
     painter->drawEllipse(ret);
+}
+
+void BCircle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    qreal dx = event->scenePos().x() - event->lastScenePos().x();
+    qreal dy = event->scenePos().y() - event->lastScenePos().y();
+    this->setCenter( this->getCenter() + QPointF(dx, dy) );
+    this->setEdge( this->getEdge() + QPointF(dx, dy) );
+
+    QAbstractGraphicsShapeItem::mouseReleaseEvent(event);
 }

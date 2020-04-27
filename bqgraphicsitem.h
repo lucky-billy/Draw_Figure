@@ -10,28 +10,46 @@ class BGraphicsItem : public QObject, public QAbstractGraphicsShapeItem
 
 public:
     enum ItemType {
-        BGraphics_Circle,
-        BGraphics_Ellipse,
-        BGraphics_ConcentricCircle,
-        BGraphics_Rect,
-        BGraphics_Square,
-        BGraphics_Polygon
+        Circle = 0,
+        Ellipse,
+        Concentric_circle,
+        Rectangle,
+        Square,
+        Polygon
     };
 
-protected:
-    BGraphicsItem(QGraphicsPixmapItem* parent);
+    ItemType getType() { return m_type; }
+    QPointF getCenter() { return m_center; }
+    void setCenter(QPointF p) { m_center = p; }
 
 protected:
+    BGraphicsItem(QPointF center, ItemType type);
+
+    virtual void focusInEvent(QFocusEvent *event) override;
+    virtual void focusOutEvent(QFocusEvent *event) override;
+
+protected:
+    QPointF m_center;
+    ItemType m_type;
+
     QList<BGraphicsItem *> m_itemList;
     BPointItemList m_pointList;
-    QPointF center;
+
+    QPen m_pen_isSelected;
+    QPen m_pen_noSelected;
 };
+
+//------------------------------------------------------------------------------
 
 // 圆
 class BCircle : public BGraphicsItem
 {
 public:
-    BCircle(qreal x, qreal y, qreal radius, QGraphicsPixmapItem* parent = nullptr);
+    BCircle(QPointF center, QPointF edge, ItemType type);
+
+    void updateRadius() { m_radius = sqrt(pow(m_center.x() - m_edge.x(), 2) + pow(m_center.y() - m_edge.y(), 2)); }
+    QPointF getEdge() { return m_edge; }
+    void setEdge(QPointF p) { m_edge = p; }
 
 protected:
     virtual QRectF boundingRect() const override;
@@ -40,8 +58,11 @@ protected:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
+    virtual void mouseReleaseEvent(QGraphicsSceneMouseEvent *event) override;
+
 protected:
-    qreal radius;
+    QPointF m_edge;
+    qreal m_radius;
 };
 
 #endif // BQGRAPHICSITEM_H

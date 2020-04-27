@@ -20,7 +20,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_circleBtn_clicked()
 {
-    BCircle *m_circle = new BCircle(0, 0, 50);
+    BCircle *m_circle = new BCircle(QPointF(0,0), QPointF(50,0), BGraphicsItem::ItemType::Circle);
     m_scene.addItem(m_circle);
 }
 
