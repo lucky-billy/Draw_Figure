@@ -1,7 +1,8 @@
 ﻿#include "bqgraphicsitem.h"
 #include <QDebug>
 
-BGraphicsItem::BGraphicsItem(QPointF center, ItemType type) : m_center(center), m_type(type)
+BGraphicsItem::BGraphicsItem(QPointF center, QPointF edge, ItemType type)
+    : m_center(center), m_edge(edge), m_type(type)
 {
     m_pen_noSelected.setColor(QColor(0, 160, 230));
     m_pen_noSelected.setWidth(2);
@@ -12,8 +13,6 @@ BGraphicsItem::BGraphicsItem(QPointF center, ItemType type) : m_center(center), 
     this->setFlags(QGraphicsItem::ItemIsSelectable |
                    QGraphicsItem::ItemIsMovable |
                    QGraphicsItem::ItemIsFocusable);
-
-    m_itemList.append(this);
 }
 
 void BGraphicsItem::focusInEvent(QFocusEvent *event)
@@ -31,7 +30,7 @@ void BGraphicsItem::focusOutEvent(QFocusEvent *event)
 //------------------------------------------------------------------------------
 
 BEllipse::BEllipse(qreal x, qreal y, qreal width, qreal height, ItemType type)
-    : BGraphicsItem(QPointF(x,y), type), m_edge(QPointF(x+width/2,y+height/2))
+    : BGraphicsItem(QPointF(x,y), QPointF(x+width/2,y+height/2), type)
 {
     BPointItem *point = new BPointItem(this, m_edge, BPointItem::Edge);
     point->setParentItem(this);
@@ -42,10 +41,7 @@ BEllipse::BEllipse(qreal x, qreal y, qreal width, qreal height, ItemType type)
 
 QRectF BEllipse::boundingRect() const
 {
-    return QRectF(m_center.x() - m_edge.x(),
-                  m_center.y() - m_edge.y(),
-                  m_edge.x() * 2,
-                  m_edge.y() * 2);
+    return QRectF(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
 }
 
 void BEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -55,36 +51,26 @@ void BEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    QRectF ret(m_center.x() - m_edge.x(),
-               m_center.y() - m_edge.y(),
-               m_edge.x() * 2,
-               m_edge.y() * 2);
+    QRectF ret(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
     painter->drawEllipse(ret);
-}
-
-void BEllipse::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    qreal dx = event->scenePos().x() - event->lastScenePos().x();
-    qreal dy = event->scenePos().y() - event->lastScenePos().y();
-    this->setCenter( this->getCenter() + QPointF(dx, dy) );
-    this->setEdge( this->getEdge() + QPointF(dx, dy) );
-
-    QAbstractGraphicsShapeItem::mouseReleaseEvent(event);
 }
 
 //------------------------------------------------------------------------------
 
-BCircle::BCircle(qreal x, qreal y, qreal radius, ItemType type) : BEllipse(x, y, radius*2, radius*2, type)
+BCircle::BCircle(qreal x, qreal y, qreal radius, ItemType type)
+    : BEllipse(x, y, radius*2, radius*2, type)
 {
     updateRadius();
 }
 
+void BCircle::updateRadius()
+{
+    m_radius = sqrt(pow(m_center.x() - m_edge.x(), 2) + pow(m_center.y() - m_edge.y(), 2));
+}
+
 QRectF BCircle::boundingRect() const
 {
-    return QRectF(m_center.x() - m_radius,
-                  m_center.y() - m_radius,
-                  m_radius * 2,
-                  m_radius * 2);
+    return QRectF(m_center.x() - m_radius, m_center.y() - m_radius, m_radius * 2, m_radius * 2);
 }
 
 void BCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -94,17 +80,60 @@ void BCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    QRectF ret(m_center.x() - m_radius,
-               m_center.y() - m_radius,
-               m_radius * 2,
-               m_radius * 2);
+    QRectF ret(m_center.x() - m_radius, m_center.y() - m_radius, m_radius * 2, m_radius * 2);
     painter->drawEllipse(ret);
 }
 
 //------------------------------------------------------------------------------
 
+BConcentricCircle::BConcentricCircle(qreal x, qreal y, qreal radius1, qreal radius2, ItemType type)
+    : BCircle(x, y, radius1, type), m_another_edge(x+radius2, y+radius2)
+{
+    BPointItem *point = new BPointItem(this, m_another_edge, BPointItem::Con_Edge);
+    point->setParentItem(this);
+    m_pointList.append(point);
+    m_pointList.setRandColor();
+
+    updateOtherRadius();
+}
+
+void BConcentricCircle::updateOtherRadius()
+{
+    m_another_radius = sqrt(pow(m_center.x() - m_another_edge.x(), 2) +
+                            pow(m_center.y() - m_another_edge.y(), 2));
+}
+
+QPointF BConcentricCircle::getAnotherEdge()
+{
+    return m_another_edge;
+}
+
+void BConcentricCircle::setAnotherEdge(QPointF p)
+{
+    m_another_edge = p;
+}
+
+QRectF BConcentricCircle::boundingRect() const
+{
+    qreal temp = m_radius > m_another_radius ? m_radius : m_another_radius;
+    return QRectF(m_center.x() - temp, m_center.y() - temp, temp * 2, temp * 2);
+}
+
+void BConcentricCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    painter->setPen(this->pen());
+    painter->setBrush(this->brush());
+
+    QRectF ret(m_center.x() - m_another_radius, m_center.y() - m_another_radius, m_another_radius * 2, m_another_radius * 2);
+    painter->drawEllipse(ret);
+
+    BCircle::paint(painter, option, widget);
+}
+
+//------------------------------------------------------------------------------
+
 BRectangle::BRectangle(qreal x, qreal y, qreal width, qreal height, ItemType type)
-    : BGraphicsItem(QPointF(x,y), type), m_edge(QPointF(width/2,height/2))
+    : BGraphicsItem(QPointF(x,y), QPointF(width/2,height/2), type)
 {
     BPointItem *point = new BPointItem(this, m_edge, BPointItem::Edge);
     point->setParentItem(this);
@@ -115,10 +144,7 @@ BRectangle::BRectangle(qreal x, qreal y, qreal width, qreal height, ItemType typ
 
 QRectF BRectangle::boundingRect() const
 {
-    return QRectF(m_center.x() - m_edge.x(),
-                  m_center.y() - m_edge.y(),
-                  m_edge.x() * 2,
-                  m_edge.y() * 2);
+    return QRectF(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
 }
 
 void BRectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
@@ -128,23 +154,14 @@ void BRectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    QRectF ret(m_center.x() - m_edge.x(),
-               m_center.y() - m_edge.y(),
-               m_edge.x() * 2,
-               m_edge.y() * 2);
+    QRectF ret(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
     painter->drawRect(ret);
-}
-
-void BRectangle::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    qreal dx = event->scenePos().x() - event->lastScenePos().x();
-    qreal dy = event->scenePos().y() - event->lastScenePos().y();
-    this->setCenter( this->getCenter() + QPointF(dx, dy) );
-    this->setEdge( this->getEdge() + QPointF(dx, dy) );
-
-    QAbstractGraphicsShapeItem::mouseReleaseEvent(event);
 }
 
 //------------------------------------------------------------------------------
 
-BSquare::BSquare(qreal x, qreal y, qreal width, ItemType type) : BRectangle(x, y, width, width, type) {}
+BSquare::BSquare(qreal x, qreal y, qreal width, ItemType type)
+    : BRectangle(x, y, width, width, type) {}
+
+//------------------------------------------------------------------------------
+
