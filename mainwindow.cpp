@@ -26,7 +26,8 @@ void MainWindow::on_circleBtn_clicked()
 
 void MainWindow::on_ellipseBtn_clicked()
 {
-
+    BEllipse *m_ellipse = new BEllipse(0, 0, 120, 80, BGraphicsItem::ItemType::Ellipse);
+    m_scene.addItem(m_ellipse);
 }
 
 void MainWindow::on_conCircleBtn_clicked()
@@ -36,12 +37,14 @@ void MainWindow::on_conCircleBtn_clicked()
 
 void MainWindow::on_squareBtn_clicked()
 {
-
+    BSquare *m_square = new BSquare(0, 0, 60, BGraphicsItem::ItemType::Square);
+    m_scene.addItem(m_square);
 }
 
 void MainWindow::on_rectangleBtn_clicked()
 {
-
+    BRectangle *m_rectangle = new BRectangle(0, 0, 80, 60, BGraphicsItem::ItemType::Rectangle);
+    m_scene.addItem(m_rectangle);
 }
 
 void MainWindow::on_polygonBtn_clicked()
@@ -49,7 +52,27 @@ void MainWindow::on_polygonBtn_clicked()
 
 }
 
+void MainWindow::on_roundRecBtn_clicked()
+{
+
+}
+
+void MainWindow::on_rnRecBtn_clicked()
+{
+
+}
+
 void MainWindow::on_clearBtn_clicked()
 {
     m_scene.clear();
+}
+
+void MainWindow::on_saveBtn_clicked()
+{
+
+}
+
+void MainWindow::on_loadBtn_clicked()
+{
+
 }
