@@ -45,7 +45,7 @@ protected:
 class BCircle : public BGraphicsItem
 {
 public:
-    BCircle(QPointF center, QPointF edge, ItemType type);
+    BCircle(qreal x, qreal y, qreal radius, ItemType type);
 
     void updateRadius() { m_radius = sqrt(pow(m_center.x() - m_edge.x(), 2) + pow(m_center.y() - m_edge.y(), 2)); }
     QPointF getEdge() { return m_edge; }

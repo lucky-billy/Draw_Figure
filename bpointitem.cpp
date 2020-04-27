@@ -61,18 +61,18 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             this->scene()->update();
         } break;
         case Edge: {
+            m_point = this->mapToParent( event->pos() );
+            this->setPos(m_point);
+            this->scene()->update();
+
             switch (itemType) {
             case BGraphicsItem::ItemType::Circle: {
                 BCircle *circle = dynamic_cast<BCircle *>(item);
-                circle->setEdge(circle->getEdge() + QPointF(dx, dy));
+                circle->setEdge(m_point);
                 circle->updateRadius();
             } break;
             default: break;
             }
-
-            m_point = this->mapToParent( event->pos() );
-            this->setPos(m_point);
-            this->scene()->update();
         } break;
         default: break;
         }

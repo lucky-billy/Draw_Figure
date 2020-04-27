@@ -30,12 +30,12 @@ void BGraphicsItem::focusOutEvent(QFocusEvent *event)
 
 //------------------------------------------------------------------------------
 
-BCircle::BCircle(QPointF center, QPointF edge, ItemType type) : BGraphicsItem(center, type), m_edge(edge)
+BCircle::BCircle(qreal x, qreal y, qreal radius, ItemType type) : BGraphicsItem(QPointF(x,y), type), m_edge(QPointF(x+radius,y))
 {
-    BPointItem *point = new BPointItem(this, edge, BPointItem::Edge);
+    BPointItem *point = new BPointItem(this, m_edge, BPointItem::Edge);
     point->setParentItem(this);
     m_pointList.append(point);
-    m_pointList.append(new BPointItem(this, center, BPointItem::Center));
+    m_pointList.append(new BPointItem(this, m_center, BPointItem::Center));
     m_pointList.setRandColor();
 
     updateRadius();
