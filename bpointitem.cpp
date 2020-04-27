@@ -18,6 +18,9 @@ BPointItem::BPointItem(QAbstractGraphicsShapeItem* parent, QPointF p, PointType 
     case Edge:
         this->setCursor(Qt::PointingHandCursor);
         break;
+    case Con_Edge:
+        this->setCursor(Qt::PointingHandCursor);
+        break;
     default: break;
     }
 }
@@ -40,6 +43,9 @@ void BPointItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option
         painter->drawEllipse(-4, -4, 8, 8);
         break;
     case Edge:
+        painter->drawRect(QRectF(-4, -4, 8, 8));
+        break;
+    case Con_Edge:
         painter->drawRect(QRectF(-4, -4, 8, 8));
         break;
     default: break;
@@ -75,6 +81,11 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 circle->setEdge(m_point);
                 circle->updateRadius();
             } break;
+            case BGraphicsItem::ItemType::Concentric_Circle: {
+                BCircle *circle = dynamic_cast<BCircle *>(item);
+                circle->setEdge(m_point);
+                circle->updateRadius();
+            } break;
             case BGraphicsItem::ItemType::Rectangle: {
                 BRectangle *rectangle = dynamic_cast<BRectangle *>(item);
                 rectangle->setEdge(m_point);
@@ -89,6 +100,20 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             default: break;
             }
         } break;
+        case Con_Edge: {
+            m_point = this->mapToParent( event->pos() );
+            this->setPos(m_point);
+            this->scene()->update();
+
+            switch (itemType) {
+            case BGraphicsItem::ItemType::Concentric_Circle: {
+                BConcentricCircle *conCircle = dynamic_cast<BConcentricCircle *>(item);
+                conCircle->setAnotherEdge(m_point);
+                conCircle->updateOtherRadius();
+            } break;
+            default: break;
+            }
+        }
         default: break;
         }
     }

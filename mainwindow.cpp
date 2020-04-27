@@ -32,7 +32,8 @@ void MainWindow::on_ellipseBtn_clicked()
 
 void MainWindow::on_conCircleBtn_clicked()
 {
-
+    BConcentricCircle *m_conCircle = new BConcentricCircle(0, 0, 50, 80, BGraphicsItem::ItemType::Concentric_Circle);
+    m_scene.addItem(m_conCircle);
 }
 
 void MainWindow::on_squareBtn_clicked()
