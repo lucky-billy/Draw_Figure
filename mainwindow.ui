@@ -67,9 +67,37 @@
       </widget>
      </item>
      <item>
+      <widget class="QPushButton" name="roundRecBtn">
+       <property name="text">
+        <string>圆角矩形</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="rnRecBtn">
+       <property name="text">
+        <string>圆端矩形</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QPushButton" name="clearBtn">
        <property name="text">
         <string>清空</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="saveBtn">
+       <property name="text">
+        <string>保存</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="loadBtn">
+       <property name="text">
+        <string>加载</string>
        </property>
       </widget>
      </item>

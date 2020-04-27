@@ -66,10 +66,25 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             this->scene()->update();
 
             switch (itemType) {
+            case BGraphicsItem::ItemType::Ellipse: {
+                BEllipse *ellipse = dynamic_cast<BEllipse *>(item);
+                ellipse->setEdge(m_point);
+            } break;
             case BGraphicsItem::ItemType::Circle: {
                 BCircle *circle = dynamic_cast<BCircle *>(item);
                 circle->setEdge(m_point);
                 circle->updateRadius();
+            } break;
+            case BGraphicsItem::ItemType::Rectangle: {
+                BRectangle *rectangle = dynamic_cast<BRectangle *>(item);
+                rectangle->setEdge(m_point);
+            } break;
+            case BGraphicsItem::ItemType::Square: {
+                BSquare *square = dynamic_cast<BSquare *>(item);
+                qreal ret = m_point.x() > m_point.y() ? m_point.x() : m_point.y();
+                m_point.setX(ret);
+                m_point.setY(ret);
+                square->setEdge(m_point);
             } break;
             default: break;
             }
