@@ -1,4 +1,6 @@
 ﻿#include "bqgraphicsitem.h"
+#include <QVector>
+#include <algorithm>
 #include <QDebug>
 
 BGraphicsItem::BGraphicsItem(QPointF center, QPointF edge, ItemType type)
@@ -164,4 +166,86 @@ BSquare::BSquare(qreal x, qreal y, qreal width, ItemType type)
     : BRectangle(x, y, width, width, type) {}
 
 //------------------------------------------------------------------------------
+
+BPolygon::BPolygon(QList<QPointF> list, ItemType type)
+    : BGraphicsItem(QPointF(0,0), QPointF(0,0), type)
+{
+    for (auto &temp : list)
+    {
+        BPointItem *point = new BPointItem(this, temp, BPointItem::Edge);
+        point->setParentItem(this);
+        m_pointList.append(point);
+    }
+
+    m_center = getCentroid(list);
+    m_pointList.append(new BPointItem(this, m_center, BPointItem::Center));
+    m_pointList.setRandColor();
+
+    getMaxLength();
+}
+
+QPointF BPolygon::getCentroid(QList<QPointF> list)
+{
+    qreal x = 0;
+    qreal y = 0;
+    for (auto &temp : list)
+    {
+        x += temp.x();
+        y += temp.y();
+    }
+    x = x/list.size();
+    y = y/list.size();
+    return QPointF(x,y);
+}
+
+void BPolygon::getMaxLength()
+{
+    QVector<qreal> vec;
+    for (auto &temp : m_pointList)
+    {
+        qreal dis = sqrt(pow(m_center.x() - temp->x(), 2) + pow(m_center.y() - temp->y(), 2));
+        vec.append(dis);
+    }
+
+    qreal ret = 0;
+    for (auto &temp : vec)
+    {
+        if (temp > ret) {
+            ret = temp;
+        }
+    }
+    m_radius = ret;
+}
+
+void BPolygon::updatePolygon(QPointF origin, QPointF end)
+{
+    for (auto &temp : m_pointList) {
+        if (temp->getPoint() == origin) {
+            temp->setPoint(end);
+        }
+    }
+
+    getMaxLength();
+}
+
+QRectF BPolygon::boundingRect() const
+{
+    return QRectF(m_center.x() - m_radius, m_center.y() - m_radius, m_radius * 2, m_radius * 2);
+}
+
+void BPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->setPen(this->pen());
+    painter->setBrush(this->brush());
+
+    for (int i = 1; i < m_pointList.size() - 1; i++)
+    {
+        painter->drawLine(m_pointList.at(i-1)->getPoint(), m_pointList.at(i)->getPoint());
+    }
+
+    painter->drawLine(m_pointList.at(m_pointList.size()-2)->getPoint(), m_pointList.at(0)->getPoint());
+}
+
 

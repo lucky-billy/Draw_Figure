@@ -18,12 +18,14 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     bpointitem.cpp \
     bqgraphicsitem.cpp \
+    bqgraphicsscene.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     bpointitem.h \
     bqgraphicsitem.h \
+    bqgraphicsscene.h \
     mainwindow.h
 
 FORMS += \

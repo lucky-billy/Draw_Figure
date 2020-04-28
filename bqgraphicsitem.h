@@ -133,6 +133,25 @@ public:
 //------------------------------------------------------------------------------
 
 // 多边形
+class BPolygon : public BGraphicsItem
+{
+public:
+    BPolygon(QList<QPointF> list, ItemType type);
+
+    QPointF getCentroid(QList<QPointF> list);
+    void getMaxLength();
+    void updatePolygon(QPointF origin, QPointF end);
+
+protected:
+    virtual QRectF boundingRect() const override;
+
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+protected:
+    qreal m_radius;
+};
 
 //------------------------------------------------------------------------------
 

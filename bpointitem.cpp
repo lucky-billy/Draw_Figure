@@ -97,6 +97,11 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 m_point.setY(ret);
                 square->setEdge(m_point);
             } break;
+            case BGraphicsItem::ItemType::Polygon: {
+                BPolygon *polygon = dynamic_cast<BPolygon *>(item);
+                polygon->updatePolygon(QPointF(event->lastScenePos().x(), event->lastScenePos().y()),
+                                       QPointF(event->scenePos().x(), event->scenePos().y()));
+            } break;
             default: break;
             }
         } break;
@@ -113,7 +118,7 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
             } break;
             default: break;
             }
-        }
+        } break;
         default: break;
         }
     }
