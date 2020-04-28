@@ -86,6 +86,18 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 circle->setEdge(m_point);
                 circle->updateRadius();
             } break;
+            case BGraphicsItem::ItemType::Pie: {
+                BPie *pie = dynamic_cast<BPie *>(item);
+                pie->setEdge(m_point);
+                pie->updateRadius();
+                pie->updateAngle();
+            } break;
+            case BGraphicsItem::ItemType::Chord: {
+                BChord *chord = dynamic_cast<BChord *>(item);
+                chord->setEdge(m_point);
+                chord->updateRadius();
+                chord->updateEndAngle();
+            } break;
             case BGraphicsItem::ItemType::Rectangle: {
                 BRectangle *rectangle = dynamic_cast<BRectangle *>(item);
                 rectangle->setEdge(m_point);

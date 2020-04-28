@@ -3,6 +3,8 @@
 
 #include "bpointitem.h"
 
+#define PI 3.1415926
+
 // 自定义图元 - 基础类
 class BGraphicsItem : public QObject, public QAbstractGraphicsShapeItem
 {
@@ -13,6 +15,8 @@ public:
         Circle = 0,         // 圆
         Ellipse,            // 椭圆
         Concentric_Circle,  // 同心圆
+        Pie,                // 饼
+        Chord,              // 和弦
         Rectangle,          // 矩形
         Square,             // 正方形
         Polygon,            // 多边形
@@ -107,6 +111,44 @@ protected:
 
 //------------------------------------------------------------------------------
 
+// 饼
+class BPie : public BCircle
+{
+public:
+    BPie(qreal x, qreal y, qreal radius, qreal angle, ItemType type);
+
+    void updateAngle();
+
+protected:
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+protected:
+    qreal m_angle;
+};
+
+//------------------------------------------------------------------------------
+
+// 和弦
+class BChord : public BPie
+{
+public:
+    BChord(qreal x, qreal y, qreal radius, qreal angle, ItemType type);
+
+    void updateEndAngle();
+
+protected:
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+protected:
+    qreal m_end_angle;
+};
+
+//------------------------------------------------------------------------------
+
 // 矩形
 class BRectangle : public BGraphicsItem
 {
@@ -160,5 +202,7 @@ protected:
 //------------------------------------------------------------------------------
 
 // 圆端矩形
+
+//------------------------------------------------------------------------------
 
 #endif // BQGRAPHICSITEM_H

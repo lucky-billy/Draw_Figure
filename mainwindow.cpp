@@ -40,6 +40,20 @@ void MainWindow::on_conCircleBtn_clicked()
     m_scene.addItem(m_conCircle);
 }
 
+void MainWindow::on_pieBtn_clicked()
+{
+    m_scene.setJudgement(false);
+    BPie *m_pie = new BPie(0, 0, 80, 30, BGraphicsItem::ItemType::Pie);
+    m_scene.addItem(m_pie);
+}
+
+void MainWindow::on_chordBtn_clicked()
+{
+    m_scene.setJudgement(false);
+    BChord *m_chord = new BChord(0, 0, 80, 30, BGraphicsItem::ItemType::Chord);
+    m_scene.addItem(m_chord);
+}
+
 void MainWindow::on_squareBtn_clicked()
 {
     m_scene.setJudgement(false);

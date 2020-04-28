@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1024</width>
+    <height>768</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,7 +20,7 @@
       <x>20</x>
       <y>20</y>
       <width>91</width>
-      <height>551</height>
+      <height>731</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -42,6 +42,20 @@
       <widget class="QPushButton" name="conCircleBtn">
        <property name="text">
         <string>同心圆</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pieBtn">
+       <property name="text">
+        <string>饼</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="chordBtn">
+       <property name="text">
+        <string>和弦</string>
        </property>
       </widget>
      </item>
@@ -108,8 +122,8 @@
      <rect>
       <x>140</x>
       <y>20</y>
-      <width>631</width>
-      <height>551</height>
+      <width>861</width>
+      <height>731</height>
      </rect>
     </property>
    </widget>
