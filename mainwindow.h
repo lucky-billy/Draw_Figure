@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
-#include <QGraphicsScene>
+#include "bqgraphicsscene.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -15,6 +15,9 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+public slots:
+    void createBPolygon(QList<QPointF> m_pointList);
 
 private slots:
     void on_circleBtn_clicked();
@@ -42,6 +45,6 @@ private slots:
 private:
     Ui::MainWindow *ui;
 
-    QGraphicsScene m_scene;
+    BQGraphicsScene m_scene;
 };
 #endif // MAINWINDOW_H
