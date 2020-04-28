@@ -26,6 +26,10 @@ private slots:
 
     void on_conCircleBtn_clicked();
 
+    void on_pieBtn_clicked();
+
+    void on_chordBtn_clicked();
+
     void on_squareBtn_clicked();
 
     void on_rectangleBtn_clicked();
