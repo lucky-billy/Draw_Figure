@@ -264,21 +264,31 @@ BSquare::BSquare(qreal x, qreal y, qreal width, ItemType type)
 
 //------------------------------------------------------------------------------
 
-BPolygon::BPolygon(QList<QPointF> list, ItemType type)
+BPolygon::BPolygon(ItemType type)
     : BGraphicsItem(QPointF(0,0), QPointF(0,0), type)
 {
-    for (auto &temp : list)
-    {
-        BPointItem *point = new BPointItem(this, temp, BPointItem::Edge);
-        point->setParentItem(this);
-        m_pointList.append(point);
+    is_create_finished = false;
+}
+
+void BPolygon::pushPoint(QPointF p, QList<QPointF> list, bool isCenter)
+{
+    if (!is_create_finished) {
+        m_center = getCentroid(list);
+        getMaxLength();
+
+        if (isCenter) {
+            m_pointList.append(new BPointItem(this, m_center, BPointItem::Center));
+            m_pointList.setRandColor();
+            is_create_finished = true;
+        } else {
+            BPointItem *point = new BPointItem(this, p, BPointItem::Edge);
+            point->setParentItem(this);
+            m_pointList.append(point);
+            m_pointList.setColor(QColor(0, 255, 0));
+        }
+
+        this->update();
     }
-
-    m_center = getCentroid(list);
-    m_pointList.append(new BPointItem(this, m_center, BPointItem::Center));
-    m_pointList.setRandColor();
-
-    getMaxLength();
 }
 
 QPointF BPolygon::getCentroid(QList<QPointF> list)
@@ -343,12 +353,19 @@ void BPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    for (int i = 1; i < m_pointList.size() - 1; i++)
-    {
-        painter->drawLine(m_pointList.at(i-1)->getPoint(), m_pointList.at(i)->getPoint());
-    }
+    if (is_create_finished) {
+        for (int i = 1; i < m_pointList.size() - 1; i++)
+        {
+            painter->drawLine(m_pointList.at(i-1)->getPoint(), m_pointList.at(i)->getPoint());
+        }
 
-    painter->drawLine(m_pointList.at(m_pointList.size()-2)->getPoint(), m_pointList.at(0)->getPoint());
+        painter->drawLine(m_pointList.at(m_pointList.size()-2)->getPoint(), m_pointList.at(0)->getPoint());
+    } else {
+        for (int i = 1; i < m_pointList.size(); i++)
+        {
+            painter->drawLine(m_pointList.at(i-1)->getPoint(), m_pointList.at(i)->getPoint());
+        }
+    }
 }
 
 //------------------------------------------------------------------------------

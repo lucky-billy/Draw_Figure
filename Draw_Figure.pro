@@ -19,6 +19,7 @@ SOURCES += \
     bpointitem.cpp \
     bqgraphicsitem.cpp \
     bqgraphicsscene.cpp \
+    bqgraphicsview.cpp \
     main.cpp \
     mainwindow.cpp
 
@@ -26,6 +27,7 @@ HEADERS += \
     bpointitem.h \
     bqgraphicsitem.h \
     bqgraphicsscene.h \
+    bqgraphicsview.h \
     mainwindow.h
 
 FORMS += \

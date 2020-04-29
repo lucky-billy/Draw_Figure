@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "bqgraphicsitem.h"
 #include "bqgraphicsscene.h"
 
 QT_BEGIN_NAMESPACE
@@ -16,8 +17,7 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-public slots:
-    void createBPolygon(QList<QPointF> m_pointList);
+    void setBtnEnabled(bool enable);
 
 private slots:
     void on_circleBtn_clicked();
