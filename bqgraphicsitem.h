@@ -204,10 +204,27 @@ protected:
 //------------------------------------------------------------------------------
 
 // 圆角矩形
+class BRounded_Rectangle : public BRectangle
+{
+public:
+    BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type);
+
+protected:
+    virtual QRectF boundingRect() const override;
+
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+};
 
 //------------------------------------------------------------------------------
 
 // 圆端矩形
+//class BRound_End_Rectangle : public BRounded_Rectangle
+//{
+//public:
+//    BRound_End_Rectangle();
+//};
 
 //------------------------------------------------------------------------------
 

@@ -370,5 +370,48 @@ void BPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 //------------------------------------------------------------------------------
 
+BRounded_Rectangle::BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type)
+    : BRectangle(x, y, width, height, type) {}
+
+QRectF BRounded_Rectangle::boundingRect() const
+{
+    return QRectF(m_center.x() - m_edge.x() - m_edge.y()
+                  , m_center.y() - m_edge.y(),
+                  m_edge.x() * 2 + m_edge.y() * 2,
+                  m_edge.y() * 2);
+}
+
+void BRounded_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->setPen(this->pen());
+    painter->setBrush(this->brush());
+
+    QRectF ret(m_edge.x(), m_edge.y(), m_center.x() - 2*m_edge.x(), m_center.y() - 2*m_edge.y());
+
+    QPointF left_top = ret.topLeft();
+    QPointF left_bottom = ret.bottomLeft();
+    QPointF right_top = ret.topRight();
+    QPointF right_bottom = ret.bottomRight();
+
+    int radius = abs(m_edge.y());
+    QPointF deltax(radius, 0);
+    QPointF deltay(0, radius);
+
+    painter->drawLine(left_top + deltax, right_top - deltax);
+    painter->drawLine(left_bottom + deltax, right_bottom - deltax);
+    painter->drawLine(left_top + deltay, left_bottom - deltay);
+    painter->drawLine(right_top + deltay, right_bottom - deltay);
+
+    painter->drawArc(QRectF(left_top, QSizeF(radius*2, radius*2)), -180 * 16, -90 * 16);
+    painter->drawArc(QRectF(right_top-deltax*2, QSizeF(radius*2, radius*2)), 0 * 16, 90 * 16);
+    painter->drawArc(QRectF(left_bottom-deltay*2, QSizeF(radius*2, radius*2)), -90 * 16, -90 * 16);
+    painter->drawArc(QRectF(right_bottom-deltax*2-deltay*2, QSizeF(radius*2, radius*2)), 0 * 16, -90 * 16);
+}
+
+//------------------------------------------------------------------------------
 
 
+
+//------------------------------------------------------------------------------

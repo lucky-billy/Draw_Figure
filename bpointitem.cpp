@@ -114,6 +114,10 @@ void BPointItem::mouseMoveEvent(QGraphicsSceneMouseEvent *event)
                 polygon->updatePolygon(QPointF(event->lastScenePos().x(), event->lastScenePos().y()),
                                        QPointF(event->scenePos().x(), event->scenePos().y()));
             } break;
+            case BGraphicsItem::ItemType::Rounded_Rectangle: {
+                BRounded_Rectangle *rounded_Rectangle = dynamic_cast<BRounded_Rectangle *>(item);
+                rounded_Rectangle->setEdge(m_point);
+            } break;
             default: break;
             }
         } break;
