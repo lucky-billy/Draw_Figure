@@ -117,7 +117,7 @@
      </item>
     </layout>
    </widget>
-   <widget class="QGraphicsView" name="graphicsView">
+   <widget class="BQGraphicsView" name="graphicsView">
     <property name="geometry">
      <rect>
       <x>140</x>
@@ -129,6 +129,13 @@
    </widget>
   </widget>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>BQGraphicsView</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">bqgraphicsview.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

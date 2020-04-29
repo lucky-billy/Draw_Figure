@@ -177,12 +177,17 @@ public:
 // 多边形
 class BPolygon : public BGraphicsItem
 {
+    Q_OBJECT
+
 public:
-    BPolygon(QList<QPointF> list, ItemType type);
+    BPolygon(ItemType type);
 
     QPointF getCentroid(QList<QPointF> list);
     void getMaxLength();
     void updatePolygon(QPointF origin, QPointF end);
+
+public slots:
+    void pushPoint(QPointF p, QList<QPointF> list, bool isCenter);
 
 protected:
     virtual QRectF boundingRect() const override;
@@ -193,6 +198,7 @@ protected:
 
 protected:
     qreal m_radius;
+    bool is_create_finished;
 };
 
 //------------------------------------------------------------------------------

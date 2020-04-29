@@ -2,32 +2,32 @@
 
 BQGraphicsScene::BQGraphicsScene(QObject *parent) : QGraphicsScene(parent)
 {
-    start_Create_BPolygon = false;
+    is_creating_BPolygon = false;
 }
 
-bool BQGraphicsScene::getJudgement()
+void BQGraphicsScene::startCreate()
 {
-    return start_Create_BPolygon;
-}
-
-void BQGraphicsScene::setJudgement(bool jud)
-{
-    m_pointList.clear();
-    start_Create_BPolygon = jud;
+    is_creating_BPolygon = true;
+    m_list.clear();
 }
 
 void BQGraphicsScene::mousePressEvent(QGraphicsSceneMouseEvent *event)
 {
-    if (start_Create_BPolygon) {
+    if (is_creating_BPolygon) {
+        QPointF p(event->scenePos().x(), event->scenePos().y());
+
         switch ( event->buttons() )
         {
         case Qt::LeftButton: {
-            m_pointList.append(QPointF(event->scenePos().x(), event->scenePos().y()));
+            m_list.push_back(p);
+            emit updatePoint(p, m_list, false);
         } break;
         case Qt::RightButton: {
-            if (m_pointList.size() >= 3) {
-                emit createFinished(m_pointList);
-                setJudgement(false);
+            if (m_list.size() >= 3) {
+                emit updatePoint(p, m_list, true);
+                emit createFinished();
+                is_creating_BPolygon = false;
+                m_list.clear();
             }
         } break;
         default: break;

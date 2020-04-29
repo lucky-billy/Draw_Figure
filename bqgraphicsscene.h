@@ -11,18 +11,18 @@ class BQGraphicsScene : public QGraphicsScene
 public:
     BQGraphicsScene(QObject *parent = nullptr);
 
-    bool getJudgement();
-    void setJudgement(bool jud);
+    void startCreate();
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);
 
 signals:
-    void createFinished(QList<QPointF> m_pointList);
+    void updatePoint(QPointF p, QList<QPointF> list, bool isCenter);
+    void createFinished();
 
 protected:
-    bool start_Create_BPolygon;
-    QList<QPointF> m_pointList;
+    QList<QPointF> m_list;
+    bool is_creating_BPolygon;
 };
 
 #endif // BQGRAPHICSSCENE_H
