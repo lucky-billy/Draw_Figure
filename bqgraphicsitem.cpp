@@ -375,8 +375,8 @@ BRounded_Rectangle::BRounded_Rectangle(qreal x, qreal y, qreal width, qreal heig
 
 QRectF BRounded_Rectangle::boundingRect() const
 {
-    return QRectF(m_center.x() - m_edge.x() - m_edge.y()
-                  , m_center.y() - m_edge.y(),
+    return QRectF(m_center.x() - m_edge.x() - m_edge.y(),
+                  m_center.y() - m_edge.y(),
                   m_edge.x() * 2 + m_edge.y() * 2,
                   m_edge.y() * 2);
 }
@@ -388,7 +388,10 @@ void BRounded_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    QRectF ret(m_edge.x(), m_edge.y(), m_center.x() - 2*m_edge.x(), m_center.y() - 2*m_edge.y());
+    QRectF ret(m_center.x() - m_edge.x() - m_edge.y(),
+               m_center.y() - m_edge.y(),
+               m_edge.x() * 2 + m_edge.y() * 2,
+               m_edge.y() * 2);
 
     QPointF left_top = ret.topLeft();
     QPointF left_bottom = ret.bottomLeft();
