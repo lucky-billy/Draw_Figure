@@ -36,9 +36,9 @@ private slots:
 
     void on_polygonBtn_clicked();
 
-    void on_roundRecBtn_clicked();
-
     void on_rnRecBtn_clicked();
+
+    void on_roundRecBtn_clicked();
 
     void on_clearBtn_clicked();
 

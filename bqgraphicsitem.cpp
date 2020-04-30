@@ -90,7 +90,7 @@ void BCircle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 BConcentricCircle::BConcentricCircle(qreal x, qreal y, qreal radius1, qreal radius2, ItemType type)
     : BCircle(x, y, radius1, type), m_another_edge(x+radius2, y+radius2)
 {
-    BPointItem *point = new BPointItem(this, m_another_edge, BPointItem::Con_Edge);
+    BPointItem *point = new BPointItem(this, m_another_edge, BPointItem::Special);
     point->setParentItem(this);
     m_pointList.append(point);
     m_pointList.setRandColor();
@@ -102,11 +102,6 @@ void BConcentricCircle::updateOtherRadius()
 {
     m_another_radius = sqrt(pow(m_center.x() - m_another_edge.x(), 2) +
                             pow(m_center.y() - m_another_edge.y(), 2));
-}
-
-QPointF BConcentricCircle::getAnotherEdge()
-{
-    return m_another_edge;
 }
 
 void BConcentricCircle::setAnotherEdge(QPointF p)
@@ -370,10 +365,10 @@ void BPolygon::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
 //------------------------------------------------------------------------------
 
-BRounded_Rectangle::BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type)
+BRound_End_Rectangle::BRound_End_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type)
     : BRectangle(x, y, width, height, type) {}
 
-QRectF BRounded_Rectangle::boundingRect() const
+QRectF BRound_End_Rectangle::boundingRect() const
 {
     return QRectF(m_center.x() - m_edge.x() - m_edge.y(),
                   m_center.y() - m_edge.y(),
@@ -381,22 +376,43 @@ QRectF BRounded_Rectangle::boundingRect() const
                   m_edge.y() * 2);
 }
 
-void BRounded_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void BRound_End_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(option);
     Q_UNUSED(widget);
     painter->setPen(this->pen());
     painter->setBrush(this->brush());
 
-    QRectF ret(m_center.x() - m_edge.x() - m_edge.y(),
-               m_center.y() - m_edge.y(),
-               m_edge.x() * 2 + m_edge.y() * 2,
-               m_edge.y() * 2);
+    QPointF left_top, left_bottom, right_top, right_bottom;
 
-    QPointF left_top = ret.topLeft();
-    QPointF left_bottom = ret.bottomLeft();
-    QPointF right_top = ret.topRight();
-    QPointF right_bottom = ret.bottomRight();
+    if ( m_edge.x() >= 0 && m_edge.y() < 0 )
+    {
+        left_top = QPointF(m_center.x() - m_edge.x() + m_edge.y(), m_edge.y());
+        left_bottom = QPointF(m_center.x() - m_edge.x() + m_edge.y(), (-1) * m_edge.y());
+        right_top = QPointF(m_center.x() + m_edge.x() - m_edge.y(), m_edge.y());
+        right_bottom = QPointF(m_center.x() + m_edge.x() - m_edge.y(), (-1) * m_edge.y());
+    }
+    else if ( m_edge.x() < 0 && m_edge.y() < 0 )
+    {
+        left_top = QPointF(m_center.x() + m_edge.x() + m_edge.y(), m_edge.y());
+        left_bottom = QPointF(m_center.x() + m_edge.x() + m_edge.y(), (-1) * m_edge.y());
+        right_top = QPointF(m_center.x() - m_edge.x() - m_edge.y(), m_edge.y());
+        right_bottom = QPointF(m_center.x() - m_edge.x() - m_edge.y(), (-1) * m_edge.y());
+    }
+    else if ( m_edge.x() < 0 && m_edge.y() >= 0 )
+    {
+        left_top = QPointF(m_center.x() + m_edge.x() - m_edge.y(), (-1) * m_edge.y());
+        left_bottom = QPointF(m_center.x() + m_edge.x() - m_edge.y(), m_edge.y());
+        right_top = QPointF(m_center.x() - m_edge.x() + m_edge.y(), (-1) * m_edge.y());
+        right_bottom = QPointF(m_center.x() - m_edge.x() + m_edge.y(), m_edge.y());
+    }
+    else if ( m_edge.x() >= 0 && m_edge.y() >=0 )
+    {
+        left_top = QPointF(m_center.x() - m_edge.x() - m_edge.y(), (-1) * m_edge.y());
+        left_bottom = QPointF(m_center.x() - m_edge.x() - m_edge.y(), m_edge.y());
+        right_top = QPointF(m_center.x() + m_edge.x() + m_edge.y(), (-1) * m_edge.y());
+        right_bottom = QPointF(m_center.x() + m_edge.x() + m_edge.y(), m_edge.y());
+    }
 
     int radius = abs(m_edge.y());
     QPointF deltax(radius, 0);
@@ -408,13 +424,101 @@ void BRounded_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem
     painter->drawLine(right_top + deltay, right_bottom - deltay);
 
     painter->drawArc(QRectF(left_top, QSizeF(radius*2, radius*2)), -180 * 16, -90 * 16);
-    painter->drawArc(QRectF(right_top-deltax*2, QSizeF(radius*2, radius*2)), 0 * 16, 90 * 16);
     painter->drawArc(QRectF(left_bottom-deltay*2, QSizeF(radius*2, radius*2)), -90 * 16, -90 * 16);
+    painter->drawArc(QRectF(right_top-deltax*2, QSizeF(radius*2, radius*2)), 0 * 16, 90 * 16);
     painter->drawArc(QRectF(right_bottom-deltax*2-deltay*2, QSizeF(radius*2, radius*2)), 0 * 16, -90 * 16);
 }
 
 //------------------------------------------------------------------------------
 
+BRounded_Rectangle::BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type)
+    : BRectangle(x, y, width, height, type)
+{
+    m_another_edge.setX( m_edge.x() );
+    m_another_edge.setY( (-1) * m_edge.y() );
 
+    BPointItem *point = new BPointItem(this, m_another_edge, BPointItem::Special);
+    point->setParentItem(this);
+    point->setCursor(Qt::SizeAllCursor);
+    m_pointList.append(point);
+    m_pointList.setRandColor();
+
+    updateRadius();
+}
+
+void BRounded_Rectangle::updateRadius()
+{
+    qreal dx = 0;
+    qreal dy = 0;
+    qreal absX = abs(m_edge.x());
+    qreal absY = abs(m_edge.y());
+
+    if ( m_another_edge.x() >= 0 && m_another_edge.y() < 0 )
+    {
+        dx = absX - m_another_edge.x();
+        dy = absY + m_another_edge.y();
+    }
+    else if ( m_another_edge.x() < 0 && m_another_edge.y() < 0 )
+    {
+        dx = absX + m_another_edge.x();
+        dy = absY + m_another_edge.y();
+    }
+    else if ( m_another_edge.x() < 0 && m_another_edge.y() >= 0 )
+    {
+        dx = absX + m_another_edge.x();
+        dy = absY - m_another_edge.y();
+    }
+    else if ( m_another_edge.x() >= 0 && m_another_edge.y() >= 0 )
+    {
+        dx = absX - m_another_edge.x();
+        dy = absY - m_another_edge.y();
+    }
+
+    m_radius = dx >= dy ? dx : dy;
+}
+
+void BRounded_Rectangle::updateAnotherEdge(QPointF p)
+{
+    qreal retX = 0;
+    qreal retY = 0;
+
+    if ( p.x() == m_another_edge.x() ) {
+        retX = m_edge.x();
+        retY = (-1) * m_edge.y() + m_radius;
+    } else {
+        retX = m_edge.x() - m_radius;
+        retY = (-1) * m_edge.y();
+    }
+
+    m_another_edge.setX(retX);
+    m_another_edge.setY(retY);
+    m_pointList.at(2)->setPoint(m_another_edge);
+}
+
+qreal BRounded_Rectangle::getRadius()
+{
+    return m_radius;
+}
+
+QPointF BRounded_Rectangle::getAnotherEdge()
+{
+    return m_another_edge;
+}
+
+void BRounded_Rectangle::setAnotherEdge(QPointF p)
+{
+    m_another_edge = p;
+}
+
+void BRounded_Rectangle::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+{
+    Q_UNUSED(option);
+    Q_UNUSED(widget);
+    painter->setPen(this->pen());
+    painter->setBrush(this->brush());
+
+    QRectF ret(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
+    painter->drawRoundedRect(ret, m_radius, m_radius);
+}
 
 //------------------------------------------------------------------------------

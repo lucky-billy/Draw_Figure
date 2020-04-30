@@ -71,15 +71,16 @@ void MainWindow::on_polygonBtn_clicked()
     });
 }
 
+void MainWindow::on_rnRecBtn_clicked()
+{
+    BRound_End_Rectangle *m_round_end_Rectangle = new BRound_End_Rectangle(0, 0, 80, 60, BGraphicsItem::ItemType::Round_End_Rectangle);
+    m_scene.addItem(m_round_end_Rectangle);
+}
+
 void MainWindow::on_roundRecBtn_clicked()
 {
     BRounded_Rectangle *m_rounded_Rectangle = new BRounded_Rectangle(0, 0, 80, 60, BGraphicsItem::ItemType::Rounded_Rectangle);
     m_scene.addItem(m_rounded_Rectangle);
-}
-
-void MainWindow::on_rnRecBtn_clicked()
-{
-
 }
 
 void MainWindow::on_clearBtn_clicked()
