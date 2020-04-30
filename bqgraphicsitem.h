@@ -1,6 +1,7 @@
 ﻿#ifndef BQGRAPHICSITEM_H
 #define BQGRAPHICSITEM_H
 
+#include <QObject>
 #include "bpointitem.h"
 
 #define PI 3.1415926
@@ -53,6 +54,8 @@ protected:
 // 椭圆
 class BEllipse : public BGraphicsItem
 {
+    Q_OBJECT
+
 public:
     BEllipse(qreal x, qreal y, qreal width, qreal height, ItemType type);
 
@@ -62,6 +65,8 @@ protected:
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
+
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 };
 
 //------------------------------------------------------------------------------

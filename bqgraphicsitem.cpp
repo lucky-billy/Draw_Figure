@@ -1,6 +1,9 @@
 ﻿#include "bqgraphicsitem.h"
 #include <QVector>
 #include <QDebug>
+#include <QMenu>
+#include <QSpinBox>
+#include <QWidgetAction>
 
 BGraphicsItem::BGraphicsItem(QPointF center, QPointF edge, ItemType type)
     : m_center(center), m_edge(edge), m_type(type)
@@ -54,6 +57,69 @@ void BEllipse::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
 
     QRectF ret(m_center.x() - m_edge.x(), m_center.y() - m_edge.y(), m_edge.x() * 2, m_edge.y() * 2);
     painter->drawEllipse(ret);
+}
+
+void BEllipse::contextMenuEvent(QGraphicsSceneContextMenuEvent *event)
+{
+    if ( !this->isSelected() )
+        return;
+
+    QMenu* menu = new QMenu();
+    menu->setStyleSheet("QMenu { background-color:rgb(89,87,87); border: 5px solid rgb(235,110,36); }"
+                        "QMenu::item { font-size: 10pt; color: rgb(225,225,225); border: 3px solid rgb(60,60,60); "
+                        "background-color:rgb(89,87,87); padding:16px 16px; margin:2px 2px; }"
+                        "QMenu::item:selected { background-color:rgb(235,110,36); }"
+                        "QMenu::item:pressed { border: 1px solid rgb(60,60,61); background-color: rgb(220,80,6); }");
+
+    QFont font;
+    font.setFamily("微软雅黑");
+    font.setPixelSize(16);
+    font.setBold(true);
+
+    QSpinBox* width_spinBox = new QSpinBox(menu);
+    width_spinBox->setStyleSheet("QSpinBox{ width:120px; height:30px;}");
+    width_spinBox->setFont(font);
+    width_spinBox->setRange(0, 1000);
+    width_spinBox->setPrefix("w: ");
+    width_spinBox->setSuffix(" mm");
+    width_spinBox->setSingleStep(1);
+    width_spinBox->setValue(2 * abs(m_edge.x()));
+    connect(width_spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int v){
+        m_edge.setX(v/2);
+        m_pointList.at(0)->setPoint(m_edge);
+        this->hide();
+        this->update();
+        this->show();
+    });
+
+    QSpinBox* height__spinBox = new QSpinBox(menu);
+    height__spinBox->setStyleSheet("QSpinBox{ width:120px; height:30px;}");
+    height__spinBox->setFont(font);
+    height__spinBox->setRange(0, 1000);
+    height__spinBox->setPrefix("h: ");
+    height__spinBox->setSuffix(" mm");
+    height__spinBox->setSingleStep(1);
+    height__spinBox->setValue(2 * abs(m_edge.y()));
+    connect(height__spinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), [=](int v){
+        m_edge.setY(v/2);
+        m_pointList.at(0)->setPoint(m_edge);
+        this->hide();
+        this->update();
+        this->show();
+    });
+
+    QWidgetAction* width_widgetAction = new QWidgetAction(menu);
+    width_widgetAction->setDefaultWidget(width_spinBox);
+    menu->addAction(width_widgetAction);
+
+    QWidgetAction* height_widgetAction = new QWidgetAction(menu);
+    height_widgetAction->setDefaultWidget(height__spinBox);
+    menu->addAction(height_widgetAction);
+
+    menu->exec(QCursor::pos());
+    delete menu;
+
+    QGraphicsItem::contextMenuEvent(event);
 }
 
 //------------------------------------------------------------------------------
