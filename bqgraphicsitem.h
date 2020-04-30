@@ -20,8 +20,8 @@ public:
         Rectangle,          // 矩形
         Square,             // 正方形
         Polygon,            // 多边形
-        Rounded_Rectangle,  // 圆角矩形
-        Round_End_Rectangle // 圆端矩形
+        Round_End_Rectangle,// 圆端矩形
+        Rounded_Rectangle   // 圆角矩形
     };
 
     QPointF getCenter() { return m_center; }
@@ -94,7 +94,6 @@ public:
     BConcentricCircle(qreal x, qreal y, qreal radius1, qreal radius2, ItemType type);
 
     void updateOtherRadius();
-    QPointF getAnotherEdge();
     void setAnotherEdge(QPointF p);
 
 protected:
@@ -203,11 +202,11 @@ protected:
 
 //------------------------------------------------------------------------------
 
-// 圆角矩形
-class BRounded_Rectangle : public BRectangle
+// 圆端矩形
+class BRound_End_Rectangle : public BRectangle
 {
 public:
-    BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type);
+    BRound_End_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type);
 
 protected:
     virtual QRectF boundingRect() const override;
@@ -219,12 +218,27 @@ protected:
 
 //------------------------------------------------------------------------------
 
-// 圆端矩形
-//class BRound_End_Rectangle : public BRounded_Rectangle
-//{
-//public:
-//    BRound_End_Rectangle();
-//};
+// 圆角矩形
+class BRounded_Rectangle : public BRectangle
+{
+public:
+    BRounded_Rectangle(qreal x, qreal y, qreal width, qreal height, ItemType type);
+
+    void updateRadius();
+    void updateAnotherEdge(QPointF p);
+    qreal getRadius();
+    QPointF getAnotherEdge();
+    void setAnotherEdge(QPointF p);
+
+protected:
+    virtual void paint(QPainter *painter,
+                       const QStyleOptionGraphicsItem *option,
+                       QWidget *widget) override;
+
+protected:
+    QPointF m_another_edge;
+    qreal m_radius;
+};
 
 //------------------------------------------------------------------------------
 

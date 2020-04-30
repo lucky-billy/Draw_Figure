@@ -81,16 +81,16 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="roundRecBtn">
+      <widget class="QPushButton" name="rnRecBtn">
        <property name="text">
-        <string>圆角矩形</string>
+        <string>圆端矩形</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="rnRecBtn">
+      <widget class="QPushButton" name="roundRecBtn">
        <property name="text">
-        <string>圆端矩形</string>
+        <string>圆角矩形</string>
        </property>
       </widget>
      </item>
