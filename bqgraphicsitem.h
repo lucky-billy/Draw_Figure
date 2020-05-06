@@ -86,6 +86,8 @@ protected:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
+
 protected:
     qreal m_radius;
 };
@@ -107,6 +109,8 @@ protected:
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
+
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 protected:
     QPointF m_another_edge;
@@ -165,6 +169,8 @@ protected:
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
+
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 };
 
 //------------------------------------------------------------------------------
@@ -174,6 +180,9 @@ class BSquare : public BRectangle
 {
 public:
     BSquare(qreal x, qreal y, qreal width, ItemType type);
+
+protected:
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 };
 
 //------------------------------------------------------------------------------
@@ -239,6 +248,8 @@ protected:
     virtual void paint(QPainter *painter,
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
+
+    virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
 protected:
     QPointF m_another_edge;
