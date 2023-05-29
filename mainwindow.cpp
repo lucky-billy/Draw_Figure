@@ -6,6 +6,9 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setWindowTitle(QStringLiteral("自定义图形"));
+    setMaximumSize(1024, 768);
+    setMinimumSize(1027, 768);
 
     m_scene.setBackgroundBrush(Qt::gray);
     ui->graphicsView->setScene(&m_scene);
@@ -66,9 +69,7 @@ void MainWindow::on_polygonBtn_clicked()
     m_scene.addItem(m_polygon);
 
     connect(&m_scene, SIGNAL(updatePoint(QPointF, QList<QPointF>, bool)), m_polygon, SLOT(pushPoint(QPointF, QList<QPointF>, bool)));
-    connect(&m_scene, &BQGraphicsScene::createFinished, [=](){
-        setBtnEnabled(true);
-    });
+    connect(&m_scene, &BQGraphicsScene::createFinished, [=](){ setBtnEnabled(true); });
 }
 
 void MainWindow::on_rnRecBtn_clicked()
@@ -90,12 +91,12 @@ void MainWindow::on_clearBtn_clicked()
 
 void MainWindow::on_saveBtn_clicked()
 {
-
+    m_scene.saveItemToConfig();
 }
 
 void MainWindow::on_loadBtn_clicked()
 {
-
+    m_scene.loadItemToScene();
 }
 
 void MainWindow::setBtnEnabled(bool enable)

@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 #include "bpointitem.h"
+#include "bqgraphicsitem.h"
 
 class BQGraphicsScene : public QGraphicsScene
 {
@@ -12,6 +13,8 @@ public:
     BQGraphicsScene(QObject *parent = nullptr);
 
     void startCreate();
+    void saveItemToConfig();
+    void loadItemToScene();
 
 protected:
     virtual void mousePressEvent(QGraphicsSceneMouseEvent *event);

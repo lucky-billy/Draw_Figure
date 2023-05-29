@@ -38,7 +38,7 @@ protected:
 
     virtual void mouseMoveEvent(QGraphicsSceneMouseEvent *event) override;
 
-private:
+public:
     QPointF m_point;
     PointType m_type;
 };

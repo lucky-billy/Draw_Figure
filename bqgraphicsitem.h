@@ -39,7 +39,7 @@ protected:
     virtual void focusInEvent(QFocusEvent *event) override;
     virtual void focusOutEvent(QFocusEvent *event) override;
 
-protected:
+public:
     QPointF m_center;
     QPointF m_edge;
     ItemType m_type;
@@ -88,7 +88,7 @@ protected:
 
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
-protected:
+public:
     qreal m_radius;
 };
 
@@ -112,7 +112,7 @@ protected:
 
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
-protected:
+public:
     QPointF m_another_edge;
     qreal m_another_radius;
 };
@@ -132,7 +132,7 @@ protected:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
-protected:
+public:
     qreal m_angle;
 };
 
@@ -151,7 +151,7 @@ protected:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
-protected:
+public:
     qreal m_end_angle;
 };
 
@@ -209,7 +209,7 @@ protected:
                        const QStyleOptionGraphicsItem *option,
                        QWidget *widget) override;
 
-protected:
+public:
     qreal m_radius;
     bool is_create_finished;
 };
@@ -251,7 +251,7 @@ protected:
 
     virtual void contextMenuEvent(QGraphicsSceneContextMenuEvent *event) override;
 
-protected:
+public:
     QPointF m_another_edge;
     qreal m_radius;
 };
